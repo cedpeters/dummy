@@ -5,7 +5,7 @@ on:
   pull_request:
 name: ci
 jobs:
-  test:
+  server-test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -15,24 +15,24 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node }}
-      - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
-        with:
-          version: '290.0.1'
-          project_id: ${{ secrets.GCP_PROJECT_ID }}
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
-          export_default_credentials: true
-      - run: node --version
-        working-directory: ./
-      - run: npm install
-        working-directory: ./
-      - run: npm test
-        working-directory: ./
-      # - name: test flaky.dev
-      #   if: ${{ always() }}
-      #   uses: GoogleCloudPlatform/flaky-service/packages/action@v1.0.0
+      # - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
       #   with:
-      #     github: ${{toJson(github)}}
-      #     matrix: ${{toJson(matrix)}}
-      #     os: ${{toJson(runner)}}
-      #     logtype: TAP
-      #     filepath: ${{github.workspace}}/packages/api/test.tap
+      #     version: '290.0.1'
+      #     project_id: ${{ secrets.GCP_PROJECT_ID }}
+      #     service_account_key: ${{ secrets.GCP_SA_KEY }}
+      #     export_default_credentials: true
+      - run: node --version
+        working-directory: ./api
+      - run: npm install
+        working-directory: ./api
+      - run: npm test
+        working-directory: ./api
+      - name: track flaky tests
+        if: ${{ always() }}
+        uses: cedpeters/dummy/action@v1.0.0
+        with:
+          github: ${{toJson(github)}}
+          matrix: ${{toJson(matrix)}}
+          os: ${{toJson(runner)}}
+          logtype: TAP
+          filepath: ${{github.workspace}}/api/test.tap
