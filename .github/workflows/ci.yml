@@ -5,7 +5,7 @@ on:
   pull_request:
 name: ci
 jobs:
-  test:
+  server-test:
     runs-on: ubuntu-latest
     strategy:
       matrix:
@@ -22,17 +22,17 @@ jobs:
           service_account_key: ${{ secrets.GCP_SA_KEY }}
           export_default_credentials: true
       - run: node --version
-        working-directory: ./
+        working-directory: ./api
       - run: npm install
-        working-directory: ./
+        working-directory: ./api
       - run: npm test
-        working-directory: ./
-      # - name: test flaky.dev
-      #   if: ${{ always() }}
-      #   uses: GoogleCloudPlatform/flaky-service/packages/action@v1.0.0
-      #   with:
-      #     github: ${{toJson(github)}}
-      #     matrix: ${{toJson(matrix)}}
-      #     os: ${{toJson(runner)}}
-      #     logtype: TAP
-      #     filepath: ${{github.workspace}}/packages/api/test.tap
+        working-directory: ./api
+      - name: track flaky tests
+        if: ${{ always() }}
+        uses: cedpeters/dummy/action@v1.0.0
+        with:
+          github: ${{toJson(github)}}
+          matrix: ${{toJson(matrix)}}
+          os: ${{toJson(runner)}}
+          logtype: TAP
+          filepath: ${{github.workspace}}/api/test.tap
