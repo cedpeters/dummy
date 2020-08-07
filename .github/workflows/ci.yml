@@ -1,0 +1,38 @@
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+name: ci
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [12]
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v1
+        with:
+          node-version: ${{ matrix.node }}
+      - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+        with:
+          version: '290.0.1'
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
+      - run: node --version
+        working-directory: ./
+      - run: npm install
+        working-directory: ./
+      - run: npm test
+        working-directory: ./
+      # - name: test flaky.dev
+      #   if: ${{ always() }}
+      #   uses: GoogleCloudPlatform/flaky-service/packages/action@v1.0.0
+      #   with:
+      #     github: ${{toJson(github)}}
+      #     matrix: ${{toJson(matrix)}}
+      #     os: ${{toJson(runner)}}
+      #     logtype: TAP
+      #     filepath: ${{github.workspace}}/packages/api/test.tap
