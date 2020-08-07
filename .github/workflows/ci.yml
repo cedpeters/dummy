@@ -15,12 +15,12 @@ jobs:
       - uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node }}
-      - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
-        with:
-          version: '290.0.1'
-          project_id: ${{ secrets.GCP_PROJECT_ID }}
-          service_account_key: ${{ secrets.GCP_SA_KEY }}
-          export_default_credentials: true
+      # - uses: GoogleCloudPlatform/github-actions/setup-gcloud@master
+      #   with:
+      #     version: '290.0.1'
+      #     project_id: ${{ secrets.GCP_PROJECT_ID }}
+      #     service_account_key: ${{ secrets.GCP_SA_KEY }}
+      #     export_default_credentials: true
       - run: node --version
         working-directory: ./api
       - run: npm install
