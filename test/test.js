@@ -18,7 +18,7 @@ const assert = require('assert');
 describe('tests', () => {
 
   it('is the first test', () => {
-    assert(true);
+    assert(false);
   });
 
   it('is the second test', () => {
